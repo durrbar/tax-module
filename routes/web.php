@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Ecommerce\Enums\Permission;
 use Modules\Tax\Http\Controllers\TaxController;
 
 /*
@@ -14,6 +15,18 @@ use Modules\Tax\Http\Controllers\TaxController;
 |
 */
 
-Route::group([], function () {
-    Route::resource('tax', TaxController::class)->names('tax');
+// Route::group([], function () {
+//     Route::resource('tax', TaxController::class)->names('tax');
+// });
+
+
+
+/**
+ * *****************************************
+ * Authorized Route for Super Admin only
+ * *****************************************
+ */
+
+Route::group(['middleware' => ['permission:' . Permission::SUPER_ADMIN, 'auth:sanctum']], function () {
+    Route::apiResource('taxes', TaxController::class);
 });

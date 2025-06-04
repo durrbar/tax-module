@@ -2,64 +2,94 @@
 
 namespace Modules\Tax\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Modules\Core\Http\Controllers\CoreController;
+use Modules\Tax\Http\Requests\CreateTaxRequest;
+use Modules\Tax\Http\Requests\UpdateTaxRequest;
+use Modules\Tax\Repositories\TaxRepository;
+use Modules\Ecommerce\Exceptions\MarvelException;
+use Prettus\Validator\Exceptions\ValidatorException;
 
-class TaxController extends Controller
+class TaxController extends CoreController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public $repository;
+
+    public function __construct(TaxRepository $repository)
     {
-        return view('tax::index');
+        $this->repository = $repository;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Database\Eloquent\Collection|Type[]
      */
-    public function create()
+    public function index(Request $request)
     {
-        return view('tax::create');
+        return $this->repository->all();
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param CreateTaxRequest $request
+     * @return LengthAwarePaginator|Collection|mixed
+     * @throws ValidatorException
      */
-    public function store(Request $request)
+    public function store(CreateTaxRequest $request)
     {
-        //
+        $validateData = $request->validated();
+        return $this->repository->create($validateData);
     }
 
     /**
-     * Show the specified resource.
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return JsonResponse
      */
     public function show($id)
     {
-        return view('tax::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('tax::edit');
+        try {
+            return $this->repository->findOrFail($id);
+        } catch (MarvelException $e) {
+            throw new MarvelException(NOT_FOUND);
+        }
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param CreateTaxRequest $request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateTaxRequest $request, $id)
     {
-        //
+        try {
+            $validatedData = $request->validated();
+            return $this->repository->findOrFail($id)->update($validatedData);
+        } catch (MarvelException $e) {
+            throw new MarvelException(NOT_FOUND);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return JsonResponse
      */
     public function destroy($id)
     {
-        //
+        try {
+            return $this->repository->findOrFail($id)->delete();
+        } catch (MarvelException $e) {
+            throw new MarvelException(NOT_FOUND);
+        }
     }
 }
