@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Modules\Tax\Repositories;
 
 use Modules\Core\Repositories\BaseRepository;
@@ -10,12 +9,11 @@ use Prettus\Repository\Exceptions\RepositoryException;
 
 class TaxRepository extends BaseRepository
 {
-
     /**
      * @var array
      */
     protected $fieldSearchable = [
-        'name'        => 'like',
+        'name' => 'like',
     ];
 
     public function boot()

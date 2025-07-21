@@ -14,6 +14,6 @@ use Modules\Tax\Http\Controllers\TaxController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+Route::middleware(['auth:sanctum'])->prefix('v1')->group(function (): void {
     Route::apiResource('tax', TaxController::class)->names('tax');
 });

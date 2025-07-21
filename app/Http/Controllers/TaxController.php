@@ -6,11 +6,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Modules\Core\Exceptions\DurrbarException;
 use Modules\Core\Http\Controllers\CoreController;
 use Modules\Tax\Http\Requests\CreateTaxRequest;
 use Modules\Tax\Http\Requests\UpdateTaxRequest;
 use Modules\Tax\Repositories\TaxRepository;
-use Modules\Ecommerce\Exceptions\MarvelException;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class TaxController extends CoreController
@@ -25,7 +25,6 @@ class TaxController extends CoreController
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      * @return \Illuminate\Database\Eloquent\Collection|Type[]
      */
     public function index(Request $request)
@@ -36,60 +35,62 @@ class TaxController extends CoreController
     /**
      * Store a newly created resource in storage.
      *
-     * @param CreateTaxRequest $request
      * @return LengthAwarePaginator|Collection|mixed
+     *
      * @throws ValidatorException
      */
     public function store(CreateTaxRequest $request)
     {
         $validateData = $request->validated();
+
         return $this->repository->create($validateData);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return JsonResponse
      */
     public function show($id)
     {
         try {
             return $this->repository->findOrFail($id);
-        } catch (MarvelException $e) {
-            throw new MarvelException(NOT_FOUND);
+        } catch (DurrbarException $e) {
+            throw new DurrbarException(NOT_FOUND);
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param CreateTaxRequest $request
-     * @param int $id
+     * @param  CreateTaxRequest  $request
+     * @param  int  $id
      * @return JsonResponse
      */
     public function update(UpdateTaxRequest $request, $id)
     {
         try {
             $validatedData = $request->validated();
+
             return $this->repository->findOrFail($id)->update($validatedData);
-        } catch (MarvelException $e) {
-            throw new MarvelException(NOT_FOUND);
+        } catch (DurrbarException $e) {
+            throw new DurrbarException(NOT_FOUND);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return JsonResponse
      */
     public function destroy($id)
     {
         try {
             return $this->repository->findOrFail($id)->delete();
-        } catch (MarvelException $e) {
-            throw new MarvelException(NOT_FOUND);
+        } catch (DurrbarException $e) {
+            throw new DurrbarException(NOT_FOUND);
         }
     }
 }
