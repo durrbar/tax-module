@@ -2,10 +2,12 @@
 
 namespace Modules\Tax\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Models\Scopes\OrderByUpdatedAtDescScope;
 
+#[ScopedBy([OrderByUpdatedAtDescScope::class])]
 class Tax extends Model
 {
     use HasUuids;
@@ -14,12 +16,4 @@ class Tax extends Model
 
     public $guarded = [];
 
-    protected static function boot()
-    {
-        parent::boot();
-        // Order by updated_at desc
-        static::addGlobalScope('order', function (Builder $builder): void {
-            $builder->orderBy('updated_at', 'desc');
-        });
-    }
 }
