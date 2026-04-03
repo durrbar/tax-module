@@ -17,12 +17,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 
 class TaxController extends CoreController
 {
-    public $repository;
-
-    public function __construct(TaxRepository $repository)
-    {
-        $this->repository = $repository;
-    }
+    public function __construct(public TaxRepository $repository) {}
 
     /**
      * Display a listing of the resource.
